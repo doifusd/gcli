@@ -1,4 +1,4 @@
-package main
+package sql2struct
 
 import (
 	"database/sql"
@@ -28,6 +28,22 @@ type TableColumn struct {
 	ColumnKey     string
 	ColumnType    string
 	ColumnComment string
+}
+
+var DBTypeToStructType = map[string]string{
+	"int":       "int32",
+	"tinyint":   "int8",
+	"smallint":  "int",
+	"mediumint": "int64",
+	"bigint":    "int64",
+	"bit":       "int",
+	"bool":      "bool",
+	"enum":      "string",
+	"set":       "string",
+	"varchar":   "string",
+	"char":      "string",
+	//金钱类型
+	//时间类型
 }
 
 //NewDBModel 初始化
