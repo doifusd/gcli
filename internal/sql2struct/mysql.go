@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 )
 
@@ -50,4 +51,26 @@ func (m *DBModel) Conn() error {
 		return err
 	}
 	return nil
+}
+
+func (m *DBModel) GetColumns(dbName, TableName string) ([]*TableColumn, error) {
+	query := "select column_name,data_type,column_key,is_nullable,column_type,column_comment from columns where table_schema=? and table_name=?"
+	rows, err := m.DBEngine.Query(query, dbName, TableName)
+	defer rows.Close()
+	if err != nil {
+		return nil, err
+	}
+	if rows == nil {
+		return nil, errors.New("无数据")
+	}
+	var columns []*TableColumn
+	for rows.Next() {
+		var column TableColumn
+		err := rows.Scan(&column.ColumnName, &column.DateType, &column.ColumnKey, &column.IsNullable, &column.ColumnType, &column.ColumnComment)
+		if err != nil {
+			return nil, err
+		}
+		columns = append(columns, &column)
+	}
+	return columns, nil
 }
