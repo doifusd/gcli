@@ -16,8 +16,14 @@ var (
 	dbName    string
 	tableName string
 )
-
 var sqlCmd = &cobra.Command{
+	Use:   "struct",
+	Short: "sql转换",
+	Long:  "sql转换",
+	Run:   func(cmd *cobra.Command, args []string) {},
+}
+
+var sql2structCmd = &cobra.Command{
 	Use:   "struct",
 	Short: "sql转换",
 	Long:  "sql转换",
@@ -50,7 +56,6 @@ var sqlCmd = &cobra.Command{
 
 func init() {
 	sqlCmd.AddCommand(sql2structCmd)
-
 	sql2structCmd.Flags().StringVarP(&username, "username", "", "", "数据库帐号")
 	sql2structCmd.Flags().StringVarP(&password, "password", "", "", "数据库密码")
 	sql2structCmd.Flags().StringVarP(&host, "host", "", "127.0.0.1:3306", "数据库帐号")
@@ -58,5 +63,4 @@ func init() {
 	sql2structCmd.Flags().StringVarP(&dbType, "type", "", "mysql", "数据库类型")
 	sql2structCmd.Flags().StringVarP(&dbName, "db", "", "", "数据库名")
 	sql2structCmd.Flags().StringVarP(&tableName, "table", "", "", "表名")
-
 }
