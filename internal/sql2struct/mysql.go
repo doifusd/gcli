@@ -4,6 +4,8 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+
+	_ "github.com/go-sql-driver/mysql"
 )
 
 type DBModel struct {
@@ -54,7 +56,7 @@ func NewDBModel(info *DBInfo) *DBModel {
 //Conn 连接数据库
 func (m *DBModel) Conn() error {
 	var err error
-	s := "%s:%s@tcp(%s)/information_schema?charset=%&parseTime=True&loc=Local"
+	s := "%s:%s@tcp(%s)/information_schema?charset=%s&parseTime=True&loc=Local"
 	dsn := fmt.Sprintf(
 		s,
 		m.DBInfo.UserName,
@@ -72,13 +74,13 @@ func (m *DBModel) Conn() error {
 func (m *DBModel) GetColumns(dbName, TableName string) ([]*TableColumn, error) {
 	query := "select column_name,data_type,column_key,is_nullable,column_type,column_comment from columns where table_schema=? and table_name=?"
 	rows, err := m.DBEngine.Query(query, dbName, TableName)
-	defer rows.Close()
 	if err != nil {
 		return nil, err
 	}
 	if rows == nil {
 		return nil, errors.New("无数据")
 	}
+	defer rows.Close()
 	var columns []*TableColumn
 	for rows.Next() {
 		var column TableColumn
